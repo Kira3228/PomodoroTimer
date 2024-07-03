@@ -109,21 +109,19 @@ public class PomodoroTimerService extends Service {
     private NotificationCompat.Builder notificationBuilder;
 
     private void updateNotification() {
-        if (notificationBuilder == null){
-            Intent notificationIntent = new Intent(this, MainActivity.class);
-            PendingIntent pendingIntent = PendingIntent.getActivity(this,
-                    0, notificationIntent, PendingIntent.FLAG_IMMUTABLE);
+        Intent notificationIntent = new Intent(this, MainActivity.class);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this,
+                0, notificationIntent, PendingIntent.FLAG_IMMUTABLE);
 
-            notificationBuilder = new NotificationCompat.Builder(this, CHANNEL_ID)
-                    .setContentTitle("Pomodoro Timer")
-                    .setContentText("Time remaining: " + timeLeftInMillis / 1000)
-                    .setSmallIcon(R.drawable.ic_launcher_foreground)
-                    .setContentIntent(pendingIntent)
-                    .setVibrate(null) // Устанавливаем null для отключения вибрации
-                    .setSound(null); // Устанавливаем null для отключения звука уведомления
+        notificationBuilder = new NotificationCompat.Builder(this, CHANNEL_ID)
+                .setContentTitle("Pomodoro Timer")
+                .setContentText("Time remaining: " + timeLeftInMillis / 1000)
+                .setSmallIcon(R.drawable.ic_launcher_foreground)
+                .setContentIntent(pendingIntent)
+                .setVibrate(null)
+                .setSound(null);
 
-            startForeground(1, notificationBuilder.build());
-        }
+        startForeground(1, notificationBuilder.build());
     }
 
     private void createNotificationChannel() {

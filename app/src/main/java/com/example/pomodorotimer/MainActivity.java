@@ -104,7 +104,7 @@ public class MainActivity extends AppCompatActivity {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 startService();
             } else {
-                // Разрешение не предоставлено. Обработайте отказ.
+
                 handlePermissionDenied();
             }
         }
@@ -115,7 +115,7 @@ public class MainActivity extends AppCompatActivity {
                 .setAction("Настройки", new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        // Открытие настроек приложения для включения разрешения
+
                         Intent intent = new Intent();
                         intent.setAction(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
                         intent.addCategory(Intent.CATEGORY_DEFAULT);
