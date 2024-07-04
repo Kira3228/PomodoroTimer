@@ -1,8 +1,10 @@
 package com.example.pomodorotimer;
 
 import android.app.ActivityManager;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
@@ -16,10 +18,13 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import com.google.android.material.snackbar.Snackbar;
 
+import java.util.Locale;
+
 
 public class MainActivity extends AppCompatActivity {
     private static final int REQUEST_CODE_POST_NOTIFICATIONS = 1;
     private TextView timerTextView;
+    private BroadcastReceiver timeUpdateReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,12 +46,32 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 stopService();
-
             }
         });
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             checkNotificationPermission();
+        }
+
+        // Инициализация и регистрация BroadcastReceiver
+        timeUpdateReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                if (PomodoroTimerService.ACTION_UPDATE_TIMER.equals(intent.getAction())) {
+                    long millisUntilFinished = intent.getLongExtra(PomodoroTimerService.EXTRA_TIME_LEFT, 0);
+                    updateTimer(millisUntilFinished);
+                }
+            }
+        };
+        IntentFilter filter = new IntentFilter(PomodoroTimerService.ACTION_UPDATE_TIMER);
+        registerReceiver(timeUpdateReceiver, filter);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (timeUpdateReceiver != null) {
+            unregisterReceiver(timeUpdateReceiver);
         }
     }
 
@@ -104,7 +129,6 @@ public class MainActivity extends AppCompatActivity {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 startService();
             } else {
-
                 handlePermissionDenied();
             }
         }
@@ -115,7 +139,6 @@ public class MainActivity extends AppCompatActivity {
                 .setAction("Настройки", new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-
                         Intent intent = new Intent();
                         intent.setAction(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
                         intent.addCategory(Intent.CATEGORY_DEFAULT);
@@ -126,15 +149,14 @@ public class MainActivity extends AppCompatActivity {
                         startActivity(intent);
                     }
                 }).show();
-
     }
 
     public void updateTimer(long millisUntilFinished) {
         int minutes = (int) (millisUntilFinished / 1000) / 60;
         int seconds = (int) (millisUntilFinished / 1000) % 60;
-        String timeLeftFormatted = String.format("%02d:%02d", minutes, seconds);
+
+        String timeLeftFormatted = String.format(Locale.getDefault(), "%02d:%02d", minutes, seconds);
         timerTextView.setText(timeLeftFormatted);
     }
-
 }
 
