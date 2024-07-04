@@ -37,7 +37,7 @@ public class PomodoroTimerService extends Service {
                 0, notificationIntent, PendingIntent.FLAG_IMMUTABLE);
 
         notificationBuilder = new NotificationCompat.Builder(this, CHANNEL_ID)
-                .setContentTitle("Pomodoro Timer")
+                .setContentTitle("Pomodoro Timer123123123")
                 .setContentText(input)
                 .setSmallIcon(R.drawable.ic_launcher_foreground)
                 .setContentIntent(pendingIntent);
@@ -78,12 +78,15 @@ public class PomodoroTimerService extends Service {
                 }
                 if (sessionCount % 4 == 0) {
                     timeLeftInMillis = 15 * 60 * 1000; // 15 минут перерыва
+                    sendNotification("Pomodoro Timer", "Пора отдохнуть 15 минут");
                 } else if (sessionCount % 2 == 0) {
                     timeLeftInMillis = 5 * 60 * 1000; // 5 минут перерыва
+                    sendNotification("Pomodoro Timer", "Пора отдохнуть 5 минут");
                 } else {
                     timeLeftInMillis = 25 * 60 * 1000; // 25 минут работы
+                    sendNotification("Pomodoro Timer", "Пора работать");
                 }
-                sendNotification("Pomodoro Timer", "Time to switch!");
+                //sendNotification("Pomodoro Timer", "Пора работать!");
                 startTimer();
             }
         }.start();
