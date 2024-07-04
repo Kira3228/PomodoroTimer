@@ -21,8 +21,8 @@ public class PomodoroTimerService extends Service {
     public static final String EXTRA_TIME_LEFT = "com.example.pomodorotimer.EXTRA_TIME_LEFT";
 
     private CountDownTimer countDownTimer;
-    //private long timeLeftInMillis = 25 * 60 * 1000; // 25 минут
-    private long timeLeftInMillis;
+    private long timeLeftInMillis = 25 * 60 * 1000; // 25 минут
+//    private long timeLeftInMillis ;
     private boolean isTimerRunning = false;
     private int sessionCount = 0;
 
@@ -66,13 +66,16 @@ public class PomodoroTimerService extends Service {
             @Override
             public void onTick(long millisUntilFinished) {
                 timeLeftInMillis = millisUntilFinished;
-                //updateNotification();
+               // updateNotification();
                 sendTimeUpdate();
             }
 
             @Override
             public void onFinish() {
                 sessionCount++;
+                if (sessionCount == 1){
+                    sessionCount++;
+                }
                 if (sessionCount % 4 == 0) {
                     timeLeftInMillis = 15 * 60 * 1000; // 15 минут перерыва
                 } else if (sessionCount % 2 == 0) {
@@ -132,5 +135,4 @@ public class PomodoroTimerService extends Service {
         }
     }
 }
-
 
